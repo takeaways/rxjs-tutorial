@@ -1,80 +1,52 @@
 /**
  *
- *  복잡한 택배 시스템
- *  1000개의 택배가 1초에 한 번씩 배송이된다.
- *  택배를 받으면 그 즉시 어래의 작업을 실행한다.
+ *  10초에 한 번씩 주시 거래를 시작한다.
  *
- *  1. 상품 개봉 (3 초)
- *  2. 상품 검사 (3 초)
- *  3. 상품 사용 (3 초)
+ *  한 번의 주식 거래에서는 1000번의 API 콜을 수행한다.
+ *  1000번의 API call을 함에 있어서 동시 요청은 10회 이하로 제한한다.
+ *  10회의 요청이 끝날때마다 5ms 동안 휴식을 한다.
+ *  1000번의 요청 중에 에러가 발생하면 요청을 다시 시작하되 최대 2번까지 반복한다.
+ *  ( 동시 요청 10회 이하의 조건은 만족해야 한다. )
  *
- *  이때 택배 회사는 종업원이 3명 밖에 없기 때문에 위 작업은 최대 3명에 의해서 동시에 실행 될 수 있다.
- *  즉, 동시에 4개 이상의 작업은 실행 될 수 없다.
- *
- *  각 택배들에 대해서 사품 사용까지 종료된 택배들을 10개씩 묶어서 공항으로 보낸다.
+ *  주식 거래를 성공한 뒤에는 10개씩 나누어 결과를 저장하되 주식 거래 행위에 영향을 주지 않도록 비돌기로 저장한다.
  *
  */
 
 const {
     delay,
-    tap,
-    take,
-    concatAll,
-    concatMap,
     map,
     mergeAll,
-    reduce,
+    retry,
+    mergeMap,
     bufferCount,
 } = require('rxjs/operators');
-const { of, from, interval } = require('rxjs');
+const { of, from, interval, range } = require('rxjs');
+const { default: Axios } = require('axios');
 
-function openBox(data) {
-    return of(data) //
-        .pipe(
-            delay(3000),
-            tap((data) => console.log(`${data}를 열었습니다.`))
-        );
-}
-function checkBox(data) {
-    return of(data) //
-        .pipe(
-            delay(3000),
-            tap((data) => console.log(`${data}를 확인했습니다..`))
-        );
-}
-function useProduct(data) {
-    return of(data) //
-        .pipe(
-            delay(3000),
-            tap((data) => console.log(`${data}를 사용했습니다.`))
-        );
-}
-
-const deliveries = interval(1000).pipe(take(1000));
-
-function doTask(delivery) {
-    const tasks = from([
-        openBox(delivery),
-        checkBox(delivery),
-        useProduct(delivery),
-    ]);
-    return tasks.pipe(
-        concatAll(),
-        reduce((a, c) => {
-            return delivery;
+function startTrade$(trade) {
+    range(0, 1000).pipe(
+        map(() => apiCall$().pipe(delay(5))),
+        mergeAll(10),
+        retry(2),
+        reducer((a, c) => {
+            return trade;
         })
     );
 }
 
-function sendToAirport(data) {
-    console.log('----->', data);
+function apiCall$(r) {
+    console.log(r);
+    return from(Axios.get('https://naver.com'));
 }
 
-deliveries
-    .pipe(
-        map((delivery) => doTask(delivery)),
-        mergeAll(3),
-        bufferCount(10), //앞 단계에서 방출된 값을 누적
-        tap((ten) => sendToAirport(ten))
-    )
-    .subscribe();
+function saveResult$(r) {
+    console.log('-');
+    //fs, db
+    console.log(r);
+}
+
+interval(1000 * 10).pipe(
+    mergeMap((t) => startTrade$(t)),
+    bufferCount(10),
+    mergeMap((r) => saveResult$(r))
+);
