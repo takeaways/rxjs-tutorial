@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        ul{
+            margin:0 auto;
+            list-style:none;
+            width:50%;
+            height: 50px;
+            line-height: 50px;
+            padding:0 12px;
+            background-color:red;
+            display:flex;
+            justify-content: space-between;
+            position:relative;
+        }
+        ul::after{
+            content:"";
+            position: absolute;
+            width: 100%;
+            height:4px;
+            background-color:white;
+            top:50%;
+            left: 0;
+            z-index:0;
+        
+        }
+        li{
+            background-color: red;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    
+        <ul>
+            <li>안녕</li>
+            <li>하</li>
+            <li>세요</li>
+        </ul>
+    
+</body>
+</html>
