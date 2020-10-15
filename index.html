@@ -9,42 +9,57 @@
             margin:0;
             padding:0;
         }
-        ul{
-            margin:0 auto;
-            list-style:none;
-            width:50%;
-            height: 50px;
-            line-height: 50px;
-            padding:0 12px;
-            background-color:red;
-            display:flex;
-            justify-content: space-between;
+        .return__step{
             position:relative;
-        }
-        ul::after{
+            height: 50px;
+            border: 1px solid pink;
+            line-height: 50px;
+            padding: 0px 20px;
+            display: flex;
+            justify-content: space-between;
+            /* background-color: var(--color-grey-05); */
+            z-index:0;
+            background-color:  purple;
+            }
+        .return__step::after{
             content:"";
             position: absolute;
+            height: 10px;
             width: 100%;
-            height:4px;
-            background-color:white;
+            background:white;
             top:50%;
+            transform: translateY(-50%);
             left: 0;
-            z-index:0;
-        
+            z-index:10000;
         }
-        li{
-            background-color: red;
-            z-index: 10;
-        }
+
+            .step{
+                border: 1px solid pink;
+                z-index:10;
+                background: var(--color-grey-05);
+                font-size: 12px;
+                color: var(--color-grey-02);
+            }
+            .step.on{
+                border: 1px solid pink;
+                color: var(--color-grey-01);
+                font-weight: bold;
+            }
+
+
+
+
+
+
     </style>
 </head>
 <body>
     
-        <ul>
-            <li>안녕</li>
-            <li>하</li>
-            <li>세요</li>
-        </ul>
+    <ol class="return__step">
+        <li class="step on">1 상품/수량선택</li>
+        <li class="step">2 사유선택</li>
+        <li class="step">3 반품정보확인</li>
+      </ol>
     
 </body>
 </html>
