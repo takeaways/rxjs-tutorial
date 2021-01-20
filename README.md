@@ -33,4 +33,4 @@ npm i -g rxjs
 ```
 
 
-[1] [from of]("./01_from_of/index.js")
+[1] [from of](./01_from_of/index.js)
