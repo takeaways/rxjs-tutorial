@@ -36,3 +36,4 @@ npm i -g rxjs
 - [1] [from of](./01_from_of/index.d.js)
 - [2] [interval timer](./02_interval_timer/index.d.js)
 - [3] [concat_merge](./03_concat_merge/index.d.js)
+- [4] [filter_map_reduce_tap](./04_filter_map_reduce_tap/index.d.js)
